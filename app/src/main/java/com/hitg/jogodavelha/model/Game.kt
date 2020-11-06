@@ -25,9 +25,13 @@ class Game(playerOne: String, playerTwo: String) {
 
     val isBoardFull: Boolean
         get() {
-            for (row in cells)
-                for (cell in row)
-                    if (cell == null || cell.isEmpty) return false
+            for (row in cells) {
+                for (cell in row) {
+                    if (cell == null || cell.isEmpty) {
+                        return false
+                    }
+                }
+            }
             return true
         }
 
@@ -71,5 +75,45 @@ class Game(playerOne: String, playerTwo: String) {
             Log.e(TAG, e.message!!)
             return false
         }
+    }
+
+    fun hasThreeSameVerticalCells(): Boolean {
+        try {
+            for (i in 0 until BOARD_SIZE) {
+                if (areEqual(cells[0][i], cells[1][i], cells[2][i])) {
+                    return true
+                }
+            }
+            return false
+        } catch (e: NullPointerException) {
+            Log.e(TAG, e.message!!)
+            return false
+        }
+
+    }
+
+    fun hasThreeSameDiagonalCells(): Boolean {
+        if (areEqual(cells[0][0], cells[1][1], cells[2][2]) ||
+            areEqual(cells[2][0], cells[1][1], cells[0][2])
+        ) {
+            return true
+        }
+        return false
+    }
+
+    fun hasGameEnded(): Boolean {
+        if (hasThreeSameHorizontalCells() ||
+            hasThreeSameVerticalCells() || hasThreeSameDiagonalCells()
+        ) {
+            winner.value = currentPlayer
+            return true
+        }
+
+        if (isBoardFull) {
+            winner.value = null
+            return true
+        }
+
+        return false
     }
 }
